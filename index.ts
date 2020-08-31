@@ -43,10 +43,11 @@ function isOptObj(opt: DragItemOpt): opt is DragItemOptObject {
   return typeof opt !== "function";
 }
 
+const defaultTrigger = "[data-v-drag-trigger]";
+
 export const dropItem: ObjectDirective<HTMLElement, DragItemOpt | undefined> = {
   beforeMount(el, binding) {
     const groupName = binding.arg || "default";
-    const defaultTrigger = "[data-v-drag-trigger]";
 
     const opt =
       binding.value && isOptObj(binding.value) ? binding.value : ({ onDragend: binding.value } as DragItemOptObject);
@@ -211,7 +212,7 @@ export const dropTrigger: ObjectDirective = {
   },
 };
 
-export default function use(Vue: App) {
+export default function useDragger(Vue: App) {
   Vue.directive("drag-item", dropItem);
   Vue.directive("drag-trigger", dropTrigger);
 }
