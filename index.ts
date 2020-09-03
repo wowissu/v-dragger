@@ -114,24 +114,31 @@ export const dropItem: ObjectDirective<HTMLElement, DragItemOpt | undefined> = {
           // 往下
           // 設定每個項目要上升的位置 並加總他們的高度(自己下降的高度)
           targetDragItem.translateY = items.slice(targetDragItem.index + 1, item.index + 1).reduce((acc, row) => {
-            row.translateY = targetDragItem.height * -1;
             row.moveTo = row.index - 1;
-            return acc + row.height;
+            row.translateY = items[row.moveTo].top - items[row.index].top;
+
+            // console.log(row.height);
+
+            return acc - row.translateY;
           }, 0);
         } else {
           // 往上
           // 設定每個項目要下降的位置 並加總他們的高度(自己上升的高度)
           targetDragItem.translateY = items.slice(item.index, targetDragItem.index).reduce((acc, row) => {
-            row.translateY = targetDragItem.height;
             row.moveTo = row.index + 1;
-            return acc - row.height;
+            row.translateY = items[row.moveTo].top - items[row.index].top;
+
+            return acc - row.translateY;
           }, 0);
         }
       }
 
       // 設定對應位置到style上
       items.forEach((row) => {
-        row.el.style.setProperty("transform", `${row.tempTransformText} translateY(${row.translateY}px)`);
+        row.el.style.setProperty(
+          "transform",
+          `${row.tempTransformText} translateY(${row.translateY.toPrecision(12)}px)`,
+        );
       });
 
       return false;
@@ -148,6 +155,7 @@ export const dropItem: ObjectDirective<HTMLElement, DragItemOpt | undefined> = {
 
       // 寫上動畫用的style
       items.forEach((row) => {
+        // TODO 動畫時間提出
         row.el.style.setProperty("transition", `${row.tempTransitionText} transform 0.5s`);
         row.el.style.setProperty("transform", `${row.tempTransformText} translateY(0px)`);
       });
