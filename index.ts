@@ -45,9 +45,18 @@ function isOptObj(opt: DragItemOpt): opt is DragItemOptObject {
 
 const defaultTrigger = "[data-v-drag-trigger]";
 
-export const dropItem: ObjectDirective<HTMLElement, DragItemOpt | undefined> = {
+export const dragger: ObjectDirective<HTMLElement, DragItemOpt | undefined> = {
   beforeMount(el, binding) {
-    const groupName = binding.arg || "default";
+    const groupName = binding.arg || cyrb53(`${Math.floor(Math.random() * 100)}${Date.now()}`).toString();
+
+    el.dataset["vDraggerGroup"] = groupName;
+  },
+};
+
+export const dropItem: ObjectDirective<HTMLElement, DragItemOpt | undefined> = {
+  mounted(el, binding, vnode) {
+    const parent = el.closest("[data-v-dragger-group]");
+    const groupName = binding.arg || (parent as HTMLElement)?.dataset["vDraggerGroup"] || "default";
 
     const opt =
       binding.value && isOptObj(binding.value) ? binding.value : ({ onDragend: binding.value } as DragItemOptObject);
@@ -72,8 +81,6 @@ export const dropItem: ObjectDirective<HTMLElement, DragItemOpt | undefined> = {
       tempTransitionText: el.style.transition,
     };
 
-    // onDropHandler
-
     // 儲存到指定的 group中
     dragGroups[groupName] = dragGroups[groupName] || [];
     dragGroups[groupName].push(targetDragItem);
@@ -88,6 +95,29 @@ export const dropItem: ObjectDirective<HTMLElement, DragItemOpt | undefined> = {
 
     function triggerMouseUpHandler(this: Element) {
       draggableOff(target);
+    }
+
+    // window drop handler
+    function dropHandler(e: DragEvent) {
+      e.preventDefault();
+    }
+
+    function dragstartHandler(e: DragEvent) {
+      // 計算目前 群組內的所有拖曳點位置
+      updateGroupElementOffset(items);
+
+      // 寫上動畫用的style
+      items.forEach((row) => {
+        // TODO 動畫時間提出
+        row.el.style.setProperty("transition", `${row.tempTransitionText} transform 0.5s`);
+        row.el.style.setProperty("transform", `${row.tempTransformText} translateY(0px)`);
+      });
+
+      // 註冊 window drageover event
+      window.addEventListener("dragover", dragoverHandler, false);
+      window.addEventListener("drop", dropHandler);
+
+      return false;
     }
 
     // window dragover handler
@@ -140,29 +170,6 @@ export const dropItem: ObjectDirective<HTMLElement, DragItemOpt | undefined> = {
           `${row.tempTransformText} translateY(${row.translateY.toPrecision(12)}px)`,
         );
       });
-
-      return false;
-    }
-
-    // window drop handler
-    function dropHandler(e: DragEvent) {
-      e.preventDefault();
-    }
-
-    function dragstartHandler(e: DragEvent) {
-      // 計算目前 群組內的所有拖曳點位置
-      updateGroupElementOffset(items);
-
-      // 寫上動畫用的style
-      items.forEach((row) => {
-        // TODO 動畫時間提出
-        row.el.style.setProperty("transition", `${row.tempTransitionText} transform 0.5s`);
-        row.el.style.setProperty("transform", `${row.tempTransformText} translateY(0px)`);
-      });
-
-      // 註冊 window drageover event
-      window.addEventListener("dragover", dragoverHandler, false);
-      window.addEventListener("drop", dropHandler);
 
       return false;
     }
@@ -223,6 +230,7 @@ export const dropTrigger: ObjectDirective = {
 export default function useDragger(Vue: App) {
   Vue.directive("drag-item", dropItem);
   Vue.directive("drag-trigger", dropTrigger);
+  Vue.directive("dragger", dragger);
 }
 
 function updateGroupElementOffset(rows: DragItem[]) {
@@ -244,3 +252,16 @@ function updateGroupElementOffset(rows: DragItem[]) {
       row.moveTo = i;
     });
 }
+
+const cyrb53 = function (str: string, seed = 0) {
+  let h1 = 0xdeadbeef ^ seed,
+    h2 = 0x41c6ce57 ^ seed;
+  for (let i = 0, ch; i < str.length; i++) {
+    ch = str.charCodeAt(i);
+    h1 = Math.imul(h1 ^ ch, 2654435761);
+    h2 = Math.imul(h2 ^ ch, 1597334677);
+  }
+  h1 = Math.imul(h1 ^ (h1 >>> 16), 2246822507) ^ Math.imul(h2 ^ (h2 >>> 13), 3266489909);
+  h2 = Math.imul(h2 ^ (h2 >>> 16), 2246822507) ^ Math.imul(h1 ^ (h1 >>> 13), 3266489909);
+  return 4294967296 * (2097151 & h2) + (h1 >>> 0);
+};

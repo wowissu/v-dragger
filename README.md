@@ -4,14 +4,22 @@
 
 Is only working on Vue3 for now. not Vue2.
 
-```typescript
-{
-  trigger: string,
-  onDragend: (indexMap: Record<number, number>) => void,
-}
+`<table></table>` supported
+
+```html
+// options
+<div
+  v-drag-item="{
+    trigger: string,
+    onDragend: (indexMap: Record<number, number>) => void,
+  }"
+/>
+
+// only set ondragend handler
+<div v-drag-item="(indexMap: Record<number, number>) => void" />
 ```
 
-## Usage
+## **Usage**
 
 ```html
 <ul>
@@ -21,20 +29,39 @@ Is only working on Vue3 for now. not Vue2.
 </ul>
 ```
 
-### Group drag item
+## **Group**
+
+Group drag items by v-dragger.
+
+```html
+<ul v-dragger>
+  <li v-drag-item>group1-1</li>
+  <li v-drag-item>group1-2</li>
+  <li v-drag-item>group1-3</li>
+</ul>
+
+<ul v-dragger>
+  <li v-drag-item>group1-1</li>
+  <li v-drag-item>group1-2</li>
+  <li v-drag-item>group1-3</li>
+</ul>
+```
+
+or just set the group name.
 
 ```html
 <ul>
   <li v-drag-item:group1>group1-1</li>
   <li v-drag-item:group1>group1-2</li>
   <li v-drag-item:group1>group1-3</li>
+
   <li v-drag-item:group2>group2-4</li>
   <li v-drag-item:group2>group2-5</li>
   <li v-drag-item:group2>group2-6</li>
 </ul>
 ```
 
-## Set trigger
+## **Trigger**
 
 ```html
 <ul>
@@ -42,11 +69,7 @@ Is only working on Vue3 for now. not Vue2.
   <li v-drag-item><span v-drag-trigger>Drag me<span> 1</li>
   <li v-drag-item><span v-drag-trigger>Drag me<span> 3</li>
 </ul>
-```
 
-## Set trigger
-
-```html
 <ul>
   <li v-drag-item="{ trigger: '.trigger' }"><span class="trigger">Drag me<span> 2</li>
   <li v-drag-item="{ trigger: '.trigger' }"><span class="trigger">Drag me<span> 1</li>
@@ -54,7 +77,7 @@ Is only working on Vue3 for now. not Vue2.
 </ul>
 ```
 
-## Event
+## **Event**
 
 ```html
 <ul>
@@ -77,7 +100,7 @@ Is only working on Vue3 for now. not Vue2.
 </script>
 ```
 
-same as
+or
 
 ```html
 <ul>
