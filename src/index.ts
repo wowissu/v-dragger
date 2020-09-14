@@ -1,5 +1,5 @@
 import { App, ObjectDirective } from "vue";
-import { DragItem, DragItemOpt, DraggerOpt, Dragger, DragItemHTMLElement, DraggerNode } from "./src/dragger";
+import { DragItem, DragItemOpt, DraggerOpt, Dragger, DragItemHTMLElement, DraggerNode } from "./dragger";
 
 // const globalDragger = new Dragger();
 
