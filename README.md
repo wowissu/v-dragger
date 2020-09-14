@@ -4,6 +4,22 @@
 
 Is only working on Vue3 for now. not Vue2.
 
+## Install
+
+```
+npm i v-dragger
+```
+
+### use
+
+```js
+import { createApp } from "vue";
+import App from "./App.vue";
+import useDragger from "v-dragger";
+
+createApp(App).use(useDragger).mount("#app");
+```
+
 `<table></table>` supported
 
 ```html
