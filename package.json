@@ -6,9 +6,7 @@
   "types": "types/index.d.ts",
   "scripts": {
     "start": "cd example && npm run serve",
-    "build:live": "nodemon --exec ./node_modules/.bin/ts-node -- ./index.ts",
-    "build": "tsc",
-    "publish": "webpack -p && npm publish"
+    "build": "webpack -p"
   },
   "repository": {
     "type": "git",
@@ -33,7 +31,8 @@
     "ts-loader": "^8.0.3",
     "tslib": "^2.0.1",
     "typescript": "~3.9.3",
-    "webpack": "^4.44.1"
+    "webpack": "^4.44.1",
+    "webpack-cli": "^3.3.12"
   },
   "dependencies": {
     "vue": "^3.0.0-0"
