@@ -1,6 +1,6 @@
 {
   "name": "v-dragger",
-  "version": "1.2.2",
+  "version": "1.2.3",
   "description": "drag and drop tag with vue.",
   "main": "dist/index.js",
   "types": "types/index.d.ts",
