@@ -11,10 +11,10 @@ export const dragger: ObjectDirective<DraggerNode, DraggerOpt | undefined> = {
 
 export const dropItem: ObjectDirective<DragItemHTMLElement, DragItemOpt | undefined> = {
   mounted(el, binding) {
-    el.__v_dragitem = new DragItem(el, binding.value);
+    el["__v_dragitem"] = new DragItem(el, binding.value);
   },
   beforeUnmount(el) {
-    el.__v_dragitem?.remove();
+    el["__v_dragitem"]?.remove();
   },
 };
 
