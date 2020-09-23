@@ -1,1 +1,33 @@
-!function(t){var e={};function r(n){if(e[n])return e[n].exports;var o=e[n]={i:n,l:!1,exports:{}};return t[n].call(o.exports,o,o.exports,r),o.l=!0,o.exports}r.m=t,r.c=e,r.d=function(t,e,n){r.o(t,e)||Object.defineProperty(t,e,{enumerable:!0,get:n})},r.r=function(t){"undefined"!=typeof Symbol&&Symbol.toStringTag&&Object.defineProperty(t,Symbol.toStringTag,{value:"Module"}),Object.defineProperty(t,"__esModule",{value:!0})},r.t=function(t,e){if(1&e&&(t=r(t)),8&e)return t;if(4&e&&"object"==typeof t&&t&&t.__esModule)return t;var n=Object.create(null);if(r.r(n),Object.defineProperty(n,"default",{enumerable:!0,value:t}),2&e&&"string"!=typeof t)for(var o in t)r.d(n,o,function(e){return t[e]}.bind(null,o));return n},r.n=function(t){var e=t&&t.__esModule?function(){return t.default}:function(){return t};return r.d(e,"a",e),e},r.o=function(t,e){return Object.prototype.hasOwnProperty.call(t,e)},r.p="",r(r.s=0)}([function(t,e,r){"use strict";Object.defineProperty(e,"__esModule",{value:!0}),e.dropTrigger=e.dropItem=e.dragger=void 0;var n=r(1);e.dragger={beforeMount:function(t){new n.Dragger(t)}},e.dropItem={mounted:function(t,e){t.__v_dragitem=new n.DragItem(t,e.value)},beforeUnmount:function(t){var e;null===(e=t.__v_dragitem)||void 0===e||e.remove()}},e.dropTrigger={beforeMount:function(t){t.dataset.vDragTrigger=""},beforeUnmount:function(t){delete t.dataset.vDragTrigger}},e.default=function(t){t.directive("drag-item",e.dropItem),t.directive("drag-trigger",e.dropTrigger),t.directive("dragger",e.dragger)}},function(t,e,r){"use strict";var n=this&&this.__spreadArrays||function(){for(var t=0,e=0,r=arguments.length;e<r;e++)t+=arguments[e].length;var n=Array(t),o=0;for(e=0;e<r;e++)for(var i=arguments[e],a=0,s=i.length;a<s;a++,o++)n[o]=i[a];return n};Object.defineProperty(e,"__esModule",{value:!0}),e.DragItem=e.Dragger=void 0;var o={},i={},a=function(){function t(e,r){this.el=e,this.__opt=r,this.items=[],this.opt=Object.assign({},r,o),t.__draggers.unshift(this)}return t.prototype.add=function(t){!this.items.includes(t)&&this.items.push(t)},t.prototype.updateIndex=function(){this.items.forEach((function(t){return t.update()})),n(this.items).sort((function(t,e){return t.top>e.top?1:e.top>t.top?-1:0})).forEach((function(t,e){t.index=e,t.moveTo=e}))},t.prototype.removeItem=function(t){var e=this.items.indexOf(t);e>-1&&this.items.splice(e,1)},t.__draggers=[],t.__global=new t(document),t}();e.Dragger=a;var s=function(){function t(e,r){var n;this.el=e,this.__opt=r,this.index=0,this.moveTo=0,this.height=0,this.width=0,this.top=0,this.bottom=0,this.left=0,this.right=0,this.translateY=0;var o=function(t){return"function"!=typeof t}(r)?r:{onDragend:r};this.opt=Object.assign({},i,o),this.tempStyleText=e.style.cssText,this.tempTransformText=e.style.transform,this.tempTransitionText=e.style.transition,this.dragger=a.__draggers.find((function(t){return function(t,e){var r=e;for(;(r=r.parentNode)&&r!==t;);return!!r}(t.el,e)})),null===(n=this.dragger)||void 0===n||n.add(this),this.trigger=e.querySelector(this.opt.trigger||t.defaultTrigger)||e,this.init()}return t.prototype.init=function(){var t=this.opt,e=this,r=e.dragger,n=null==r?void 0:r.items,o=e.trigger,i=e.el;function a(t){return u(o),t.stopPropagation(),!1}function s(){d(o)}function l(t){t.preventDefault()}function f(t){return null==r||r.updateIndex(),null==n||n.forEach((function(t){t.el.style.setProperty("transition",t.tempTransitionText+" transform 0.5s"),t.el.style.setProperty("transform",t.tempTransformText+" translateY(0px)")})),window.addEventListener("dragover",g,!1),window.addEventListener("drop",l),!1}function g(t){var r,o;t.preventDefault(),t.stopPropagation();var i=t.pageX,a=t.pageY;null==n||n.forEach((function(t){t.translateY=0,t.moveTo=t.index}));var s=null==n?void 0:n.find((function(t){return t.top<=a&&t.bottom>=a&&t.left<=i&&t.right>=i}));s&&s!==e&&(e.moveTo=s.index,s.index>e.index?e.translateY=null!==(r=null==n?void 0:n.slice(e.index+1,s.index+1).reduce((function(t,e){return e.moveTo=e.index-1,e.translateY=n[e.moveTo].top-n[e.index].top,t-e.translateY}),0))&&void 0!==r?r:0:e.translateY=null!==(o=null==n?void 0:n.slice(s.index,e.index).reduce((function(t,e){return e.moveTo=e.index+1,e.translateY=n[e.moveTo].top-n[e.index].top,t-e.translateY}),0))&&void 0!==o?o:0),null==n||n.forEach((function(t){t.el.style.setProperty("transform",t.tempTransformText+" translateY("+t.translateY.toPrecision(12)+"px)")}))}function p(e){d(i),null==n||n.forEach((function(t){t.el.style.cssText=t.tempStyleText}));var r=null==n?void 0:n.reduce((function(t,e){return t[e.index]=e.moveTo,t}),{});return r&&t.onDragend&&t.onDragend(r),window.removeEventListener("dragover",g,!1),window.removeEventListener("drop",l),e.preventDefault(),e.stopPropagation(),!1}o.addEventListener("mousedown",a,!1),o.addEventListener("mouseup",s,!1),i.addEventListener("dragstart",f,!1),i.addEventListener("dragend",p,!1),this.removeEventCall=function(){o.removeEventListener("mousedown",a,!1),o.removeEventListener("mouseup",s,!1),i.removeEventListener("dragstart",f,!1),i.removeEventListener("dragend",p,!1)}},t.prototype.update=function(){var t=this.el,e=t.getBoundingClientRect();this.height=t.offsetHeight,this.width=t.offsetWidth,this.top=e.top,this.bottom=e.top+this.height,this.left=e.left,this.right=e.left+this.width},t.prototype.remove=function(){var t,e;null===(t=this.removeEventCall)||void 0===t||t.call(this),null===(e=this.dragger)||void 0===e||e.removeItem(this)},t.defaultTrigger="[data-v-dragger-group]",t}();e.DragItem=s;var u=function(t){t.setAttribute("draggable","true"),t.style.setProperty("transition","transform 0.5s")},d=function(t){t.removeAttribute("draggable"),t.style.removeProperty("transition")}}]);
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.dropTrigger = exports.dropItem = exports.dragger = void 0;
+var dragger_1 = require("./dragger");
+// const globalDragger = new Dragger();
+exports.dragger = {
+    beforeMount: function (el) {
+        new dragger_1.Dragger(el);
+    },
+};
+exports.dropItem = {
+    mounted: function (el, binding) {
+        el["__v_dragitem"] = new dragger_1.DragItem(el, binding.value);
+    },
+    beforeUnmount: function (el) {
+        var _a;
+        (_a = el["__v_dragitem"]) === null || _a === void 0 ? void 0 : _a.remove();
+    },
+};
+exports.dropTrigger = {
+    beforeMount: function (el) {
+        el.dataset.vDragTrigger = "";
+    },
+    beforeUnmount: function (el) {
+        delete el.dataset.vDragTrigger;
+    },
+};
+function useDragger(Vue) {
+    Vue.directive("drag-item", exports.dropItem);
+    Vue.directive("drag-trigger", exports.dropTrigger);
+    Vue.directive("dragger", exports.dragger);
+}
+exports.default = useDragger;
